@@ -1,6 +1,7 @@
 import time
 import RPi.GPIO as GPIO
-from eventhook import EventHook
+
+from .eventhook import EventHook
 
 
 SHORT_WAIT = .2 #S (200ms)
