@@ -24,6 +24,7 @@ def on_connect(client, userdata, rc):
 
 # Execute the specified command for a door
 def execute_command(door, command):
+    
     try:
         doorName = door.name
     except:
@@ -45,6 +46,7 @@ with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.yaml'
 user = CONFIG['mqtt']['user']
 password = CONFIG['mqtt']['password']
 host = CONFIG['mqtt']['host']
+print(CONFIG['mqtt']['port'])
 port = int(CONFIG['mqtt']['port'])
 discovery = bool(CONFIG['mqtt'].get('discovery'))
 if 'discovery_prefix' not in CONFIG['mqtt']:
@@ -52,7 +54,7 @@ if 'discovery_prefix' not in CONFIG['mqtt']:
 else:
     discovery_prefix = CONFIG['mqtt']['discovery_prefix']
 
-client = mqtt.Client(client_id="MQTTGarageDoor_" + binascii.b2a_hex(os.urandom(6)), clean_session=True, userdata=None, protocol=4)
+client = mqtt.Client(client_id='MQTTGarageDoor_{}'.format(binascii.b2a_hex(os.urandom(6))), clean_session=True, userdata=None, protocol=4)
 
 client.on_connect = on_connect
 
@@ -86,7 +88,7 @@ if __name__ == "__main__":
 
         # Callback per door that passes a reference to the door
         def on_message(client, userdata, msg, door=door):
-            execute_command(door, str(msg.payload))
+            execute_command(door, str(msg.payload.decode('utf-8')))
 
         # Callback per door that passes the doors state topic
         def on_state_change(value, topic=state_topic):
